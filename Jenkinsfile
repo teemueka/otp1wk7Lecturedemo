@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
-        DOCKERHUB_REPO = 'amirdi/devopschain'
+        DOCKERHUB_CREDENTIALS_ID = 'docker_credentials'
+        DOCKERHUB_REPO = 'teemukallio/devopschain'
         DOCKER_IMAGE_TAG = 'latest'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/ADirin/devopschain_f2024.git'
+                git 'https://github.com/teemueka/otp1wk7Lecturedemo.git'
             }
         }
         stage('Run Tests') {
@@ -48,12 +48,17 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKERHUB_CREDENTIALS_ID) {
-                        docker.image("${env.DOCKERHUB_REPO}:${env.DOCKER_IMAGE_TAG}").push()
+                    withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS_ID}",
+                                                     usernameVariable: 'DOCKER_USER',
+                                                     passwordVariable: 'DOCKER_PASS')]) {
+                        bat """
+                            docker login -u %DOCKER_USER% -p %DOCKER_PASS%
+                            docker push %DOCKERHUB_REPO%:%DOCKER_IMAGE_TAG%
+                            docker logout
+                        """
                     }
                 }
             }
         }
     }
 }
-
