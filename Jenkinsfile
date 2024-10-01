@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS_ID = 'docker_credentials'
-        DOCKERHUB_REPO = 'teemukallio/wk7sportstimetracker'
+        DOCKERHUB_REPO = 'teemukallio/devopschain'
         DOCKER_IMAGE_TAG = 'latest'
     }
 
